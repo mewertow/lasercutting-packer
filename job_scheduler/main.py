@@ -1,12 +1,17 @@
 from jobs import *
+from rectpack import float2dec
 
 
 class Design(object):
-    """Combination of sheets in various colors and thicknesses"""
+    """
+    Combination of sheets in various colors and thicknesses.
+    """
 
-    def __init__(self, length, width, num_panels):
-        self.length = length
-        self.width = width
+    def __init__(self, length, width, num_panels, buffer):
+        # Automatically adds 10mm (0.4in) to each dimension for sanity
+
+        self.length = float2dec(length + buffer, 2)
+        self.width = float2dec(width + buffer, 2)
         self.num_panels = num_panels
         self.layers = self.list_layers()
 
@@ -28,16 +33,18 @@ def list_panels(*args):
     return plist
 
 
-LAYERBOX = Design(15, 9, 11)
-ECONOMYBOX = Design(11, 9, 2)
-MINIHITBOX = Design(12, 6, 6)
-BLANKPANEL = Design(28, 14, 1)
+# In inches: (Thickness, Width, Height, NumLayers, Buffer) list of lists
+LAYERBOX = Design(14.3, 8.7, 11, 0.4)
+ECONOMYBOX = Design(10.5, 8.0, 2, 0.4)
+MINIHITBOX = Design(11.8, 5.9, 6, 0.4)
+BLANKPANEL = Design(28, 14, 1, 0)
 
 # Each tuple should be design_name, num_copies
-DESIGN_LIST = [(LAYERBOX, 2), (MINIHITBOX, 1),
-               (ECONOMYBOX, 2), (BLANKPANEL, 1)]
+DESIGN_LIST = [(LAYERBOX, 1), (MINIHITBOX, 1),
+               (ECONOMYBOX, 1), (BLANKPANEL, 1)]
 
-PANEL_LIST = list_panels((48, 96, 1), (24, 18, 4))
+PANEL_LIST = list_panels((48, 96, 1), (24, 18, 20))
+#
 # ORDER MATTERS in panel list. List the panels you'd rather fill first.
 print(PANEL_LIST)
 

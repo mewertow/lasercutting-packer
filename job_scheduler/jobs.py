@@ -1,4 +1,4 @@
-from rectpack import newPacker
+from rectpack import newPacker, float2dec
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
@@ -6,8 +6,8 @@ import numpy as np
 
 def create_job(design_list):
     """
-    design_list should be list of tuples of (design, quantity)
-    returns list of tuples of all the individual layers to cut out of the panel w/ x-y dims.
+    design_list should be list of tuples of (design, quantity).
+    Returns list of tuples of all the individual layers to cut out of the panel w/ x-y dims.
     """
     job = []
     for x in design_list:  # Start by iterating over each item in the design list
@@ -34,17 +34,13 @@ def layout_job(job, panels):
 
 
 def plot_layouts(layout):
-    # all_rects = layout.rect_list()
     """
     1. Go through each bin in the packer. Create a plot, with xy dims given by the bin dimensions, and name the plot after the bin number.
     2. For each rect in the bin, add a square to the plot.
     3. Close the figure when done
     """
-    # subplot_size = len(layout)
-    # Is best as a squre? can make grid afterwards
     num_bins = len(layout)
     print("num_bins = {0}".format(num_bins))
-    # num_cols = max(1, np.floor_divide(num_bins, 2))
     num_cols = max(1, np.rint(np.sqrt(num_bins)))
     print("num cols = {0}".format(num_cols))
     num_rows = max(1, np.rint(num_bins / num_cols))
@@ -59,8 +55,8 @@ def plot_layouts(layout):
             str(abin), str(layout[abin].width), str(layout[abin].height)))
         ax.set_xbound(0, layout[abin].width)
         ax.set_ybound(0, layout[abin].height)
-        ax.set_xticks(np.linspace(0, layout[abin].width, 2))
-        ax.set_yticks(np.linspace(0, layout[abin].height, 2))
+        ax.set_xticks(np.linspace(0, layout[abin].width, 3))
+        ax.set_yticks(np.linspace(0, layout[abin].height, 3))
 
         # Star adding rects
         for rect in layout[abin]:
@@ -69,10 +65,8 @@ def plot_layouts(layout):
                     (rect.x, rect.y),  # (x,y)
                     rect.width,  # width
                     rect.height,  # height
-                    # fill=False,
                     edgecolor="black",
                     linewidth=1,
-
                 )
             )
     fig.suptitle("Cutting Layout")
