@@ -4,6 +4,26 @@ import matplotlib.patches as patches
 import numpy as np
 
 
+class Job(object):
+    """
+    A job is intended to be run on one type of material, hence thickness and color and material should be fixed. It contains all the portions from all designs that fit that specification.
+    """
+
+    def __init__(self, color, thickness, cut_list=[]):
+        self.color = color
+        self.thickness = thickness
+        self.cut_list = cut_list
+        self.job_size = len(cut_list)
+
+    def update_cut_list(self, new_cuts):
+        for c in new_cuts:
+            self.cut_list.append(c)
+        self.job_size = len(self.cut_list)
+
+    # def get_job_size():
+    #     return len(self.cut_list)
+
+
 def create_job(design_list):
     """
     design_list should be list of tuples of (design, quantity).
