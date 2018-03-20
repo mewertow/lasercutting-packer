@@ -7,7 +7,7 @@ from time import sleep
 
 class Job(object):
     """
-    A job is intended to be run on one type of material, hence thickness and color and material should be fixed. It contains all the portions from all designs that fit that specification.
+    A job is intended to be run on one type of material, hence thickness and color and material should be fixed. It contains all the portions from all designs that fit that specification in a list of tuples (width,height)
     """
 
     def __init__(self, color, thickness, cut_list=[]):
@@ -17,23 +17,14 @@ class Job(object):
         self.job_size = len(self.cut_list)
 
     def update_cut_list(self, new_cuts):
-        # new cuts is a list of cuts, passed from another object...
-        print("\n adding new cuts: {0}, size {1}".format(
-            new_cuts, len(new_cuts)))
-        # print("id of new cuts: {0}".format(id(new_cuts)))
-        # print("id of self.cut_list: {0}".format(id(self.cut_list)))
+        """Update the cut list for the job"""
         self.cut_list.extend(new_cuts[:])
-        print("new cut list: {0} \n".format(self.cut_list))
-
         self.job_size = len(self.cut_list)
-
-    # def get_job_size():
-    #     return len(self.cut_list)
 
 
 def create_job_list(order_list):
     """
-    Takes in an order list, which is a combo of designs and quantities. Splits all  designs into jobs based on material color and thickness. Creates the job list, which has one Job object that contains all layers for that color and thickness.
+    Takes in an order list, which is a combo of designs and quantities. Splits all  designs into jobs based on material color and thickness. Returns the job list, which has a Job object for all layers of one color/thickness combination.
     """
 
     job_list = []
@@ -41,52 +32,32 @@ def create_job_list(order_list):
     for d in order_list:
         design = d[0]
         count = d[1]
-        print("\n COPIES OF DESIGN, TOTAL: {0}\n".format(count))
-        print("Layer groups to check from design: {0}".format(
-            design.layer_groups))
 
-        # Go through each layer group in each design, and look at it's color/thickness.
-        # Based on these parameters, either create a new job (if unique) or append a job (if exists)
         for z in range(count):
-            print("current jobs in list: {0}".format(job_list))
-            print("COUNT: {0} out of {1} COPIES".format(z + 1, count))
 
             for lg in design.layer_groups:
-                # print(
-                #     "\n checking for {0} acrylic, {1} mm...".format(lg.color, lg.thickness))
-                # print("job_list = {0}".format((job_list)))
 
-                # if our job list is empty, of course we just create a new job and add to Job list.
                 if (len(job_list) == 0):
-
+                    # Job list is empty, create job.
                     new_job = Job(lg.color, lg.thickness, lg.layers)
                     job_list.append(new_job)
 
-                    print("EMPTY LIST. Created job for {0} acrylic at {1} mm thickness. Adding {2} cuts for total of {3}. Full CUT list:  {4}\n".format(
-                        new_job.color, new_job.thickness, len(lg.layers), new_job.job_size, new_job.cut_list))
-
                 else:
                     for j in job_list:
-                        print("checking against job {0}, {1} acrylic, {2} mm".format(
-                            j, j.color, j.thickness))
-                        # # check - can we append this layer group to existing job?
+                        # Does a job already exist?
                         if (j.color == lg.color and j.thickness == lg.thickness):
-                            print("EXISTING JOB FOUND!")
                             j.update_cut_list(lg.layers)
-                            print("UPDATED Job for {0} acrylic at {1} mm thickness, added {2} cuts for total of {3} cuts. Full CUT list: {4}\n".format(
-                                j.color, j.thickness, len(lg.layers), j.job_size, j.cut_list))
-                            # print("break, updated")
                             break
 
                     else:
-                        # no matches...
+                        # No matches, need new job.
                         new_job = Job(lg.color, lg.thickness, lg.layers)
                         job_list.append(new_job)
-                        print("NEW JOB CREATED for {0} acrylic at {1} mm thickness. Adding {2} cuts for total {3}. Full CUT list: {4}\n".format(
-                            new_job.color, new_job.thickness, len(lg.layers), new_job.job_size, new_job.cut_list))
+    # print("To do: {0} jobs, list: {1}\n".format(len(job_list), job_list))
+    return(job_list)
 
 
-def layout_job(job, panels):
+def layout_jobs(job, panels):
     layout = newPacker()
 
     # Add the design layers to packing queue
@@ -100,6 +71,26 @@ def layout_job(job, panels):
     layout.pack()
 
     return layout
+
+
+def plot_job_layouts(job_list, material_list):
+    # as long as we have jobs left:
+    while (len(job_list) > 0):
+        current_job = job_list.pop()  # grab a job
+        print("Checking job: color {0} thickness {1}\n".format(
+            current_job.color, current_job.thickness))
+
+        # match it up with the correct layers
+        for m in range(len(material_list)):
+            if(material_list[m].color == current_job.color and material_list[m].thickness == current_job.thickness):
+                current_material = material_list.pop(m)
+                print("MATCH!")
+                print("material: color {0} thickness {1}".format(
+                    current_material.color, current_material.thickness))
+                break
+
+        else:
+            print("no matching material available for job")
 
 
 def plot_layouts(layout):

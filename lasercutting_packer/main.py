@@ -10,11 +10,8 @@ class Design(object):
     def __init__(self, *design_specs):
         # Take your input tuples and convert them to0 LayerGroup objects.
 
-        # print("params = {0}".format(design_specs))
         self.layer_groups = self.list_groups(design_specs)
         self.num_groups = len(self.layer_groups)
-
-        # print(self.layer_groups)
 
     def list_groups(self, specs):
         """
@@ -23,9 +20,7 @@ class Design(object):
         glist = []
         for sp in specs:
             group = LayerGroup(*sp)
-            # print(group.color)
             glist.append(group)
-            # print(glist)``
         return glist
 
 
@@ -35,8 +30,6 @@ class LayerGroup(object):
     """
 
     def __init__(self, color, thickness, length, width, num_panels, buffer):
-        # Automatically adds desired buffer to each dimension for sanity
-
         self.color = color  # string
         self.thickness = thickness  # mm
         self.length = float2dec(length + buffer, 2)
@@ -62,47 +55,78 @@ def list_panels(*args):
     return plist
 
 
+# Job Designs -------------------------
 
 # In inches: (Color, Thickness, Width, Height, NumLayers, Buffer) list of lists
 TEST1 = Design(
-    ("blue", 1, 1, 1, 1, 0),
+    ("blue", 6, 1, 1, 1, 0),
     # ("Orange", 1, 1, 1, 1, 0),
     # ("red", 2, 2, 2, 2, 0),
 )
 
 TEST2 = Design(
-    ("black", 4, 3, 3, 3, 0),
-    ("black", 4, 3, 3, 2, 0)
+    ("black", 6, 3, 3, 3, 0),
+    ("black", 6, 2, 2, 3, 0)
     # ("blue", 1, 4, 4, 4, 0)
     # ("ORANGE", 1, 4, 4, 4, 0)
 )
 
-ORDER_LIST = [
-    (TEST1, 3),
-    (TEST2, 1),
-]
-
-create_job_list(ORDER_LIST)
-
 # LAYERBOX = Design(14.3, 8.7, 11, 0.4)
 # ECONOMYBOX = Design(10.5, 8.0, 2, 0.4)
 # MINIHITBOX = Design(11.8, 5.9, 6, 0.4)
-# BLANKPANEL = Design(28, 14, 1, 0)
-# FULLPANEL = Design(49, 96, 1, 0)
 
-# Each tuple should be design_name, num_copies
-# DESIGN_LIST = [(LAYERBOX, 1), (MINIHITBOX, 1),
-#                (ECONOMYBOX, 1), (BLANKPANEL, 1)]
-#
+# Job Designs -------------------------
+# SMALLPANEL_BLUE = Design(("blue", 6, 28, 14, 1, 0))
+# FULLPANEL_BLUE = Design(("blue", 6, 49, 96, 1, 0))
+# SMALLPANEL_BLACK = Design(("black", 6, 28, 14, 1, 0))
+# FULLPANEL_BLACK = Design(("black", 6, 49, 96, 1, 0))
 
-# DESIGN_LIST = [(TEST, 1)]
-#
+SMALLPANEL_BLUE = Design(("blue", 6, 10, 10, 1, 0))
+FULLPANEL_BLUE = Design(("blue", 6, 25, 25, 1, 0))
+SMALLPANEL_BLACK = Design(("black", 6, 10, 10, 1, 0))
+FULLPANEL_BLACK = Design(("black", 6, 25, 25, 1, 0))
+
+
+ORDER_LIST = [
+    (TEST1, 2),
+    (TEST2, 1),
+]
+
+PANEL_LIST = [
+    (SMALLPANEL_BLUE, 2),
+    # (FULLPANEL_BLACK, 1),
+    (FULLPANEL_BLACK, 1),
+    # (FULLPANEL_BLUE, 1)
+]
+
+
+JOB_LIST = create_job_list(ORDER_LIST)
+# print("\nlayer types to cut: {0}".format(JOB_LIST))
+# print("layers: ")
+# for j in JOB_LIST:
+#     print("color {0}, thickness {1}, {2} cuts: {3}".format(
+#         j.color, j.thickness, len(j.cut_list), j.cut_list))
+# now, need to use same idea to create Panel List, where we spec the types of panels we have.pooooooooooooooppp
+
+MATERIAL_LIST = create_job_list(PANEL_LIST)
+# print("\npanels types to use: {0}".format(JOB_LIST))
+# print("panels: ")
+# for p in PANEL_LIST:
+#     print("color {0}, thickness {1}, {2} cuts: {3}".format(
+#         p.color, p.thickness, len(p.cut_list), p.cut_list))
+
+plot_job_layouts(JOB_LIST, MATERIAL_LIST)
+
+
+# print(PANEL_LIST)
+# for j in PANEL_LIST:
+#     print(j.color)
+
 # PANEL_LIST = list_panels((10, 10, 2))
 # #
 # # ORDER MATTERS in panel list. List the panels you'd rather fill first.
 # print(PANEL_LIST)
 #
 #
-# JOBS = create_job(DESIGN_LIST)
 # LAYOUTS = layout_job(JOBS, PANEL_LIST)
 # plot_layouts(LAYOUTS)
