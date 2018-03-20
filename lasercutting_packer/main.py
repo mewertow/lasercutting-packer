@@ -66,9 +66,9 @@ TEST1 = Design(
 
 TEST2 = Design(
     ("black", 6, 3, 3, 3, 0),
-    ("black", 6, 2, 2, 3, 0)
-    # ("blue", 1, 4, 4, 4, 0)
-    # ("ORANGE", 1, 4, 4, 4, 0)
+    ("black", 6, 2, 2, 3, 0),
+    # ("blue", 1, 4, 4, 4, 0),
+    ("orange", 1, 4, 4, 4, 0)
 )
 
 # LAYERBOX = Design(14.3, 8.7, 11, 0.4)

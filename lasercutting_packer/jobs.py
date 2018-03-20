@@ -77,7 +77,7 @@ def plot_job_layouts(job_list, material_list):
     # as long as we have jobs left:
     while (len(job_list) > 0):
         current_job = job_list.pop()  # grab a job
-        print("Checking job: color {0} thickness {1}\n".format(
+        print("\nChecking job: color {0} thickness {1}...".format(
             current_job.color, current_job.thickness))
 
         # match it up with the correct layers
@@ -90,7 +90,7 @@ def plot_job_layouts(job_list, material_list):
                 break
 
         else:
-            print("no matching material available for job")
+            print("no matching material available for job...")
 
 
 def plot_layouts(layout):
