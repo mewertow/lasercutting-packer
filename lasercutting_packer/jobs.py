@@ -22,6 +22,18 @@ class Job(object):
         self.job_size = len(self.cut_list)
 
 
+class Layout(object):
+    """
+    A layout contains the packed job of one color and thickness.
+    """
+
+    def __init__(self, color, thickness, job, panels):
+        self.color = color
+        self.thickness = thickness
+        self.layout = layout_jobs(job, panels)
+        self.num_panels = len(self.layout)
+
+
 def create_job_list(order_list):
     """
     Takes in an order list, which is a combo of designs and quantities. Splits all  designs into jobs based on material color and thickness. Returns the job list, which has a Job object for all layers of one color/thickness combination.
@@ -53,7 +65,6 @@ def create_job_list(order_list):
                         # No matches, need new job.
                         new_job = Job(lg.color, lg.thickness, lg.layers)
                         job_list.append(new_job)
-    # print("To do: {0} jobs, list: {1}\n".format(len(job_list), job_list))
     return(job_list)
 
 
@@ -69,66 +80,75 @@ def layout_jobs(job, panels):
         layout.add_bin(*p)
 
     layout.pack()
-
     return layout
 
 
-def plot_job_layouts(job_list, material_list):
+def create_layouts_list(job_list, material_list):
     # as long as we have jobs left:
+    layouts_list = []
     while (len(job_list) > 0):
         current_job = job_list.pop()  # grab a job
-        print("\nChecking job: color {0} thickness {1}...".format(
-            current_job.color, current_job.thickness))
 
         # match it up with the correct layers
         for m in range(len(material_list)):
             if(material_list[m].color == current_job.color and material_list[m].thickness == current_job.thickness):
                 current_material = material_list.pop(m)
-                print("MATCH!")
-                print("material: color {0} thickness {1}".format(
-                    current_material.color, current_material.thickness))
+                new_layout = Layout(
+                    current_material.color, current_material.thickness, current_job.cut_list, current_material.cut_list)
+                layouts_list.append(new_layout)
                 break
 
         else:
-            print("no matching material available for job...")
+            print("no matching material available for job: {0}, {1}mm".format(
+                current_job.color, current_job.thickness))
+
+    return layouts_list
 
 
-def plot_layouts(layout):
+def plot_layouts(layout_list):
     """
     1. Go through each bin in the packer. Create a plot, with xy dims given by the bin dimensions, and name the plot after the bin number.
     2. For each rect in the bin, add a square to the plot.
     3. Close the figure when done
     """
-    num_bins = len(layout)
-    print("num_bins = {0}".format(num_bins))
-    num_cols = max(1, np.rint(np.sqrt(num_bins)))
-    print("num cols = {0}".format(num_cols))
-    num_rows = max(1, np.rint(num_bins / num_cols))
-    print("num_rows = {0}".format(num_rows))
 
-    fig = plt.figure()
+    for l in layout_list:
+        layout = l.layout
+        num_bins = len(layout)
+        num_rows = max(1, np.rint(np.sqrt(num_bins)))
+        num_cols = int(max(1, np.rint(num_bins / num_rows)))
 
-    for abin in range(len(layout)):
+        fig = plt.figure()
 
-        ax = fig.add_subplot(num_rows, num_cols, abin + 1, aspect='equal')
-        ax.set_title("Panel {0} ({1}'',{2}'')".format(
-            str(abin), str(layout[abin].width), str(layout[abin].height)))
-        ax.set_xbound(0, layout[abin].width)
-        ax.set_ybound(0, layout[abin].height)
-        ax.set_xticks(np.linspace(0, layout[abin].width, 3))
-        ax.set_yticks(np.linspace(0, layout[abin].height, 3))
+        # heads up, you need to convert from dec to float to use mpl...
+        for abin in range(len(layout)):
 
-        # Star adding rects
-        for rect in layout[abin]:
-            ax.add_patch(
-                patches.Rectangle(
-                    (rect.x, rect.y),  # (x,y)
-                    rect.width,  # width
-                    rect.height,  # height
-                    edgecolor="black",
-                    linewidth=1,
+            # print("BIN: width {0} height {1}".format(
+            #     layout[abin].width, layout[abin].height))
+            width = float(layout[abin].width)
+            height = float(layout[abin].height)
+
+            ax = fig.add_subplot(num_rows, num_cols, abin + 1, aspect='equal')
+            ax.set_title("Panel {0} ({1}'',{2}'')".format(
+                str(abin + 1), str(width), str(height)))
+            ax.set_xbound(0, width)
+            ax.set_ybound(0, height)
+            ax.set_xticks(np.linspace(0, width, 3))
+            ax.set_yticks(np.linspace(0, height, 3))
+
+            # Star adding rects
+            for rect in layout[abin]:
+                ax.add_patch(
+                    patches.Rectangle(
+                        (rect.x, rect.y),  # (x,y)
+                        rect.width,  # width
+                        rect.height,  # height
+                        edgecolor="black",
+                        facecolor=l.color,
+                        linewidth=1,
+                    )
                 )
-            )
-    fig.suptitle("Cutting Layout")
-    fig.subplots_adjust(hspace=1)
+        fig.suptitle("Acrylic: Color {0}, {1}mm".format(
+            l.color, l.thickness))
+        fig.subplots_adjust(hspace=1)
     plt.show()

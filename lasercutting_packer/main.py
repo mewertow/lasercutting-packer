@@ -56,66 +56,77 @@ def list_panels(*args):
 
 
 # Job Designs -------------------------
+# In inches: (Color, Thickness[mm], Width[in], Height[in], NumLayers, Buffer) list of lists
 
-# In inches: (Color, Thickness, Width, Height, NumLayers, Buffer) list of lists
-TEST1 = Design(
-    ("blue", 6, 1, 1, 1, 0),
-    # ("Orange", 1, 1, 1, 1, 0),
-    # ("red", 2, 2, 2, 2, 0),
-)
+LAYERBOX = Design(
+    ("none", 6, 14.3, 8.7, 11, 0.4),  # main
+    ("none", 3, 14.3, 8.7, 1, 0.4),  # art cover
+    ("red", 6, 11.4, 2.1, 2, 0.4),  # frontpanel
+    ("none", 6, 11.9, 1.7, 2, 0.4),  # frontpanel2
+    ("black", 6, 5.9, 2.1, 2, 0.4),  # sidepanel
+    ("none", 6, 6.4, 1.7, 2, 0.4))  # sidepanel2
 
-TEST2 = Design(
-    ("black", 6, 3, 3, 3, 0),
-    ("black", 6, 2, 2, 3, 0),
-    # ("blue", 1, 4, 4, 4, 0),
-    ("orange", 1, 4, 4, 4, 0)
-)
 
-# LAYERBOX = Design(14.3, 8.7, 11, 0.4)
-# ECONOMYBOX = Design(10.5, 8.0, 2, 0.4)
-# MINIHITBOX = Design(11.8, 5.9, 6, 0.4)
+ECONOMYBOX = Design(
+    ("none", 6, 10.5, 8.0, 2, 0.4),  # main
+    ("none", 3, 10.5, 8.0, 2, 0.4),  # art cover
+    ("none", 6, 1.9, 1.2, 6, 0.4))  # side insert
+
+MINIHITBOX = Design(
+    ("clear", 6, 11.8, 5.9, 6, 0.4))
 
 # Job Designs -------------------------
-# SMALLPANEL_BLUE = Design(("blue", 6, 28, 14, 1, 0))
-# FULLPANEL_BLUE = Design(("blue", 6, 49, 96, 1, 0))
-# SMALLPANEL_BLACK = Design(("black", 6, 28, 14, 1, 0))
-# FULLPANEL_BLACK = Design(("black", 6, 49, 96, 1, 0))
 
-SMALLPANEL_BLUE = Design(("blue", 6, 10, 10, 1, 0))
-FULLPANEL_BLUE = Design(("blue", 6, 25, 25, 1, 0))
-SMALLPANEL_BLACK = Design(("black", 6, 10, 10, 1, 0))
-FULLPANEL_BLACK = Design(("black", 6, 25, 25, 1, 0))
+# TEST_PANEL = Design(("blue", 6, 4, 2, 1, 0))
+SMALLPANEL_BLUE_6 = Design(("blue", 6, 18, 24, 1, 0))
+FULLPANEL_BLUE_6 = Design(("blue", 6, 48, 96, 1, 0))
+
+SMALLPANEL_BLACK_6 = Design(("black", 6, 18, 24, 1, 0))
+FULLPANEL_BLACK_6 = Design(("black", 6, 48, 96, 1, 0))
+
+SMALLPANEL_CLEAR_6 = Design(("none", 6, 18, 24, 1, 0))
+FULLPANEL_CLEAR_6 = Design(("none", 6, 48, 96, 1, 0))
+SMALLPANEL_CLEAR_3 = Design(("none", 3, 18, 24, 1, 0))
+FULLPANEL_CLEAR_3 = Design(("none", 3, 48, 96, 1, 0))
+
+SMALLPANEL_RED_6 = Design(("red", 6, 18, 24, 1, 0))
+FULLPANEL_RED_6 = Design(("red", 6, 48, 96, 1, 0))
+SMALLPANEL_RED_3 = Design(("red", 3, 18, 24, 1, 0))
+FULLPANEL_RED_3 = Design(("red", 3, 48, 96, 1, 0))
 
 
-ORDER_LIST = [
-    (TEST1, 2),
-    (TEST2, 1),
+DESIGN_LIST = [
+    (LAYERBOX, 5)
+    # (ECONOMYBOX, 5)
+    # (TEST2, 1),
 ]
 
 PANEL_LIST = [
-    (SMALLPANEL_BLUE, 2),
+    # (TEST_PANEL, 1),
+    # (SMALLPANEL_BLUE, 2),
     # (FULLPANEL_BLACK, 1),
-    (FULLPANEL_BLACK, 1),
+    (FULLPANEL_CLEAR_6, 10),
+    (SMALLPANEL_RED_6, 10),
+    (SMALLPANEL_RED_3, 10),
+
+    (SMALLPANEL_BLACK_6, 10),
+    (FULLPANEL_RED_6, 29),
+    # (FULLPANEL_CLEAR_3, 20)
+    # (SMALLPANEL_CLEAR_3, 2)
+
     # (FULLPANEL_BLUE, 1)
 ]
 
 
-JOB_LIST = create_job_list(ORDER_LIST)
-# print("\nlayer types to cut: {0}".format(JOB_LIST))
-# print("layers: ")
-# for j in JOB_LIST:
-#     print("color {0}, thickness {1}, {2} cuts: {3}".format(
-#         j.color, j.thickness, len(j.cut_list), j.cut_list))
-# now, need to use same idea to create Panel List, where we spec the types of panels we have.pooooooooooooooppp
+JOB_LIST = create_job_list(DESIGN_LIST)
 
 MATERIAL_LIST = create_job_list(PANEL_LIST)
-# print("\npanels types to use: {0}".format(JOB_LIST))
-# print("panels: ")
-# for p in PANEL_LIST:
-#     print("color {0}, thickness {1}, {2} cuts: {3}".format(
-#         p.color, p.thickness, len(p.cut_list), p.cut_list))
 
-plot_job_layouts(JOB_LIST, MATERIAL_LIST)
+LAYOUTS_LIST = create_layouts_list(JOB_LIST, MATERIAL_LIST)
+
+# print(len(LAYOUTS_LIST[0].layout))
+# plot_job_layouts(JOB_LIST, MATERIAL_LIST)
+plot_layouts(LAYOUTS_LIST)
 
 
 # print(PANEL_LIST)
