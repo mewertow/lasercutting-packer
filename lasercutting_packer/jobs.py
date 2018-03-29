@@ -116,7 +116,7 @@ def plot_layouts(layout_list):
         layout = l.layout
         num_bins = len(layout)
         num_rows = max(1, np.rint(np.sqrt(num_bins)))
-        num_cols = int(max(1, np.rint(num_bins / num_rows)))
+        num_cols = int(max(1, np.ceil(num_bins / num_rows)))
 
         fig = plt.figure()
 

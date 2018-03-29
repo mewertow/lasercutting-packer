@@ -1,4 +1,5 @@
 from jobs import *
+from dxf_writer import *
 from rectpack import float2dec
 
 
@@ -58,31 +59,53 @@ def list_panels(*args):
 # Job Designs -------------------------
 # In inches: (Color, Thickness[mm], Width[in], Height[in], NumLayers, Buffer) list of lists
 
-LAYERBOX = Design(
+LAYERBOX_V3 = Design(
     ("none", 6, 14.3, 8.7, 11, 0.4),  # main
+    ("none", 6, 14.3, 8.7, 2, 0.4),  # main, spare
     ("none", 3, 14.3, 8.7, 1, 0.4),  # art cover
-    ("red", 6, 11.4, 2.1, 2, 0.4),  # frontpanel
+    ("none", 6, 11.4, 2.1, 2, 0.4),  # frontpanel
     ("none", 6, 11.9, 1.7, 2, 0.4),  # frontpanel2
-    ("black", 6, 5.9, 2.1, 2, 0.4),  # sidepanel
-    ("none", 6, 6.4, 1.7, 2, 0.4))  # sidepanel2
+    ("none", 6, 5.9, 2.1, 2, 0.4),   # sidepanelinterior
+    ("none", 6, 6.4, 1.7, 2, 0.4),  # sidepanel exterior
+)  # sidepanel2
 
-
-ECONOMYBOX = Design(
+ECONOMYBOX_V7 = Design(
     ("none", 6, 10.5, 8.0, 2, 0.4),  # main
-    ("none", 3, 10.5, 8.0, 2, 0.4),  # art cover
-    ("none", 6, 1.9, 1.2, 6, 0.4))  # side insert
+    ("none", 6, 10.5, 8.0, 2, 0.4),  # main, spare
+    ("none", 3, 10.5, 8.0, 2, 0.4),  # art cover - 2? 1?
+    ("none", 6, 1.9, 1.2, 8, 0.4),  # side insert
+)
 
-MINIHITBOX = Design(
-    ("clear", 6, 11.8, 5.9, 6, 0.4))
+MINIHITBOX_V6 = Design(
+    ("none", 6, 11.8, 5.9, 6, 0.4),  # main
+    ("none", 6, 11.8, 5.9, 1, 0.4),  # main, spare
+    ("none", 3, 11.8, 5.9, 1, 0.4),  # artcover
+    ("none", 3, 1.5, 1.2, 2, 0.4),  # frontpanel
+    ("none", 3, 1.2, 1.2, 1, 0.4),  # sidepanel
+)
+
+KAMINABOX_V4 = Design(
+    ("none", 6, 14, 8.5, 3, 0.4),  # main
+    ("none", 6, 14, 8.5, 1, 0.4),  # main spare
+    ("none", 3, 14, 8.5, 1, 0.4),  # artcover
+    ("none", 6, 13.5, 2.3, 2, 0.4),  # frontpanel
+    ("none", 6, 7.6, 2.3, 2, 0.4),
+)
 
 # Job Designs -------------------------
 
-# TEST_PANEL = Design(("blue", 6, 4, 2, 1, 0))
+# TEST_PANEL = Design(("none", 6, 4, 2, 1, 0))
 SMALLPANEL_BLUE_6 = Design(("blue", 6, 18, 24, 1, 0))
 FULLPANEL_BLUE_6 = Design(("blue", 6, 48, 96, 1, 0))
+SMALLPANEL_BLUE_3 = Design(("blue", 3, 18, 24, 1, 0))
+FULLPANEL_BLUE_3 = Design(("blue", 3, 48, 96, 1, 0))
+
 
 SMALLPANEL_BLACK_6 = Design(("black", 6, 18, 24, 1, 0))
 FULLPANEL_BLACK_6 = Design(("black", 6, 48, 96, 1, 0))
+SMALLPANEL_BLACK_3 = Design(("black", 3, 18, 24, 1, 0))
+FULLPANEL_BLACK_3 = Design(("black", 3, 48, 96, 1, 0))
+
 
 SMALLPANEL_CLEAR_6 = Design(("none", 6, 18, 24, 1, 0))
 FULLPANEL_CLEAR_6 = Design(("none", 6, 48, 96, 1, 0))
@@ -96,25 +119,34 @@ FULLPANEL_RED_3 = Design(("red", 3, 48, 96, 1, 0))
 
 
 DESIGN_LIST = [
-    (LAYERBOX, 5)
-    # (ECONOMYBOX, 5)
-    # (TEST2, 1),
+    (LAYERBOX_V3, 1),
+    (ECONOMYBOX_V7, 1),
+    (MINIHITBOX_V6, 1),
+    (KAMINABOX_V4, 1),
+    (SMALLPANEL_CLEAR_6, 2)
 ]
 
 PANEL_LIST = [
-    # (TEST_PANEL, 1),
-    # (SMALLPANEL_BLUE, 2),
-    # (FULLPANEL_BLACK, 1),
-    (FULLPANEL_CLEAR_6, 10),
-    (SMALLPANEL_RED_6, 10),
-    (SMALLPANEL_RED_3, 10),
+    # (FULLPANEL_BLUE_6, 1),
+    # (SMALLPANEL_BLUE_6, 20),
+    # (FULLPANEL_BLUE_3, 20),
+    # (SMALLPANEL_BLUE_3, 20),
 
-    (SMALLPANEL_BLACK_6, 10),
-    (FULLPANEL_RED_6, 29),
-    # (FULLPANEL_CLEAR_3, 20)
-    # (SMALLPANEL_CLEAR_3, 2)
 
-    # (FULLPANEL_BLUE, 1)
+    # (SMALLPANEL_BLACK_6, 20),
+    # (FULLPANEL_BLACK_6, 20),
+    # (SMALLPANEL_BLACK_3, 20),
+    # (FULLPANEL_BLACK_3, 20),
+    #
+    # (SMALLPANEL_RED_6, 20),
+    # (FULLPANEL_RED_6, 20),
+    # (SMALLPANEL_RED_3, 20),
+    # (FULLPANEL_RED_3, 20),
+    #
+    # (SMALLPANEL_CLEAR_6, 20),
+    (FULLPANEL_CLEAR_6, 20),
+    (SMALLPANEL_CLEAR_3, 20),
+    # (FULLPANEL_CLEAR_3, 20),
 ]
 
 
@@ -124,20 +156,6 @@ MATERIAL_LIST = create_job_list(PANEL_LIST)
 
 LAYOUTS_LIST = create_layouts_list(JOB_LIST, MATERIAL_LIST)
 
-# print(len(LAYOUTS_LIST[0].layout))
-# plot_job_layouts(JOB_LIST, MATERIAL_LIST)
+generate_dxf(LAYOUTS_LIST)
+
 plot_layouts(LAYOUTS_LIST)
-
-
-# print(PANEL_LIST)
-# for j in PANEL_LIST:
-#     print(j.color)
-
-# PANEL_LIST = list_panels((10, 10, 2))
-# #
-# # ORDER MATTERS in panel list. List the panels you'd rather fill first.
-# print(PANEL_LIST)
-#
-#
-# LAYOUTS = layout_job(JOBS, PANEL_LIST)
-# plot_layouts(LAYOUTS)
