@@ -60,13 +60,13 @@ def list_panels(*args):
 # In inches: (Color, Thickness[mm], Width[in], Height[in], NumLayers, Buffer) list of lists
 
 LAYERBOX_V3 = Design(
-    ("none", 6, 14.3, 8.7, 11, 0.4),  # main
-    ("none", 6, 14.3, 8.7, 2, 0.4),  # main, spare
-    ("none", 3, 14.3, 8.7, 1, 0.4),  # art cover
-    ("none", 6, 11.4, 2.1, 2, 0.4),  # frontpanel
-    ("none", 6, 11.9, 1.7, 2, 0.4),  # frontpanel2
-    ("none", 6, 5.9, 2.1, 2, 0.4),   # sidepanelinterior
-    ("none", 6, 6.4, 1.7, 2, 0.4),  # sidepanel exterior
+    ("none", 6, 14.3, 8.7, 11, 0),  # main
+    ("none", 6, 14.3, 8.7, 2, 0),  # main, spare
+    ("none", 3, 14.3, 8.7, 1, 0),  # art cover
+    ("none", 6, 11.4, 2.1, 2, 0),  # frontpanel
+    ("none", 6, 11.9, 1.7, 2, 0),  # frontpanel2
+    ("none", 6, 5.9, 2.1, 2, 0),   # sidepanelinterior
+    ("none", 6, 6.4, 1.7, 2, 0),  # sidepanel exterior
 )  # sidepanel2
 
 ECONOMYBOX_V7 = Design(
@@ -90,6 +90,7 @@ KAMINABOX_V4 = Design(
     ("none", 3, 14, 8.5, 1, 0.4),  # artcover
     ("none", 6, 13.5, 2.3, 2, 0.4),  # frontpanel
     ("none", 6, 7.6, 2.3, 2, 0.4),
+    ("none", 6, 14, 8.5, 1, 0.4),  # support layer
 )
 
 # Job Designs -------------------------
@@ -120,10 +121,10 @@ FULLPANEL_RED_3 = Design(("red", 3, 48, 96, 1, 0))
 
 DESIGN_LIST = [
     (LAYERBOX_V3, 1),
-    (ECONOMYBOX_V7, 1),
-    (MINIHITBOX_V6, 1),
-    (KAMINABOX_V4, 1),
-    (SMALLPANEL_CLEAR_6, 2)
+    # (ECONOMYBOX_V7, 1),
+    # (MINIHITBOX_V6, 1),
+    # (KAMINABOX_V4, 1),
+    # (SMALLPANEL_CLEAR_6, 2)
 ]
 
 PANEL_LIST = [
@@ -142,9 +143,9 @@ PANEL_LIST = [
     # (FULLPANEL_RED_6, 20),
     # (SMALLPANEL_RED_3, 20),
     # (FULLPANEL_RED_3, 20),
-    #
-    # (SMALLPANEL_CLEAR_6, 20),
-    (FULLPANEL_CLEAR_6, 20),
+    # 11111
+    (SMALLPANEL_CLEAR_6, 20),
+    # (FULLPANEL_CLEAR_6, 20),
     (SMALLPANEL_CLEAR_3, 20),
     # (FULLPANEL_CLEAR_3, 20),
 ]
